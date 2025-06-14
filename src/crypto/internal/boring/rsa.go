@@ -340,7 +340,7 @@ func SignRSAPKCS1v15(priv *PrivateKeyRSA, h crypto.Hash, hashed []byte) ([]byte,
 	var outLen C.uint
 	if priv.withKey(func(key *C.GO_RSA) C.int {
 		out = make([]byte, C._goboringcrypto_RSA_size(key))
-		return C._goboringcrypto_RSA_sign(nid, base(hashed), C.uint(len(hashed)),
+		return C._goboringcrypto_RSA_sign(nid, base(hashed), C.size_t(len(hashed)),
 			base(out), &outLen, key)
 	}) == 0 {
 		return nil, fail("RSA_sign")

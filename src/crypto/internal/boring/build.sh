@@ -20,32 +20,35 @@ fi
 
 platform=""
 buildargs=""
+digest=""
 case "$GOARCH" in
 amd64)
-	if ! docker run --rm -t amd64/ubuntu:focal uname -m >/dev/null 2>&1; then
+	platform="--platform linux/amd64"
+	digest="sha256:6f63292a7444f9346bf6ec6816dd93029dae021ee00cabb564c440417519680c"
+	if ! docker run --rm -t $platform ubuntu:jammy@$digest uname -m >/dev/null 2>&1; then
 		echo "# Docker cannot run amd64 binaries."
 		exit 1
 	fi
-	platform="--platform linux/amd64"
-	buildargs="--build-arg ubuntu=amd64/ubuntu"
+	buildargs="--build-arg ubuntu=ubuntu:jammy@$digest"
 	;;
 arm64)
-	if ! docker run --rm -t arm64v8/ubuntu:focal uname -m >/dev/null 2>&1; then
+	platform="--platform linux/arm64/v8"
+	digest="sha256:103c9bebe997b8f0f71868e30217cebffc3bce08337c6ae6c6beac31634c1546"
+	if ! docker run --rm -t $platform ubuntu:jammy@$digest uname -m >/dev/null 2>&1; then
 		echo "# Docker cannot run arm64 binaries. Try:"
 		echo "	sudo apt-get install qemu binfmt-support qemu-user-static"
 		echo "	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes"
-		echo "	docker run --rm -t arm64v8/ubuntu:focal uname -m"
+		echo "	docker run --rm -t $platform ubuntu:jammy@$digest uname -m"
 		exit 1
 	fi
-	platform="--platform linux/arm64/v8"
-	buildargs="--build-arg ubuntu=arm64v8/ubuntu"
+	buildargs="--build-arg ubuntu=ubuntu:jammy@$digest"
 	;;
 *)
 	echo unknown GOARCH $GOARCH >&2
 	exit 2
 esac
 
-docker build $platform $buildargs --build-arg GOARCH=$GOARCH -t goboring:$GOARCH .
+SOURCE_DATE_EPOCH=1748634593 docker build $platform $buildargs --build-arg GOARCH=$GOARCH -t goboring:$GOARCH .
 id=$(docker create $platform goboring:$GOARCH)
 docker cp $id:/boring/godriver/goboringcrypto_linux_$GOARCH.syso ./syso
 docker rm $id

@@ -218,7 +218,7 @@ enum {
 };
 int _goboringcrypto_RSA_encrypt(GO_RSA*, size_t *out_len, uint8_t *out, size_t max_out, const uint8_t *in, size_t in_len, int padding);
 int _goboringcrypto_RSA_decrypt(GO_RSA*, size_t *out_len, uint8_t *out, size_t max_out, const uint8_t *in, size_t in_len, int padding);
-int _goboringcrypto_RSA_sign(int hash_nid, const uint8_t* in, unsigned int in_len, uint8_t *out, unsigned int *out_len, GO_RSA*);
+int _goboringcrypto_RSA_sign(int hash_nid, const uint8_t* in, size_t in_len, uint8_t *out, unsigned int *out_len, GO_RSA*);
 int _goboringcrypto_RSA_sign_pss_mgf1(GO_RSA*, size_t *out_len, uint8_t *out, size_t max_out, const uint8_t *in, size_t in_len, const GO_EVP_MD *md, const GO_EVP_MD *mgf1_md, int salt_len);
 int _goboringcrypto_RSA_sign_raw(GO_RSA*, size_t *out_len, uint8_t *out, size_t max_out, const uint8_t *in, size_t in_len, int padding);
 int _goboringcrypto_RSA_verify(int hash_nid, const uint8_t *msg, size_t msg_len, const uint8_t *sig, size_t sig_len, GO_RSA*);
